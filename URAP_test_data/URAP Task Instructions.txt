@@ -1,0 +1,39 @@
+Please open the zipped data folder. It contains the following files:
+
+a) companies.txt
+A text file that contains 100,000 company name examples
+
+b) locations.tsv
+A tab-separated (“\t”) text file that contains locations
+Column 1: Location name
+Column 2: Location type (‘country’, ‘state’, ‘city’)
+
+c) legal.txt
+A text file that contains some legal (company) entity forms/identifiers, like ltd., corp, GmbH, etc.
+
+Task 1)
+
+Please write a Python class NameComponents, that has a method:
+get_name_components(self, comp_name)
+get_name_components takes one argument, “comp_name”, which is one company name String.
+It returns a dictionary of the input String and its name components.
+
+Example 1: 
+comp_name = “Cognism (Germany) Ldt.”
+return_value = {“raw”: “Cognism (Germany) Ldt.”, “base_name”: “cognism”, location: ‘germany’, legal: ‘ldt.’ }
+
+Example 2: 
+comp_name = “Cognism Limited United Kingdom”
+return_value = {“raw”: “Cognism Limited United Kingdom”, “base_name”: “cognism”, location: ‘united kingdom’, legal: ‘limited’ }
+
+Example 3:
+comp_name = “Cognism”
+return_value = {“raw”: “Cognism”, “base_name”: “cognism”}
+
+Task 2 (optional)
+
+Let’s say, we also want to predict, if and where comp_name contains a legal identifier, no matter if it is contained in c) legal.tsv or not. 
+Either describe your suggested approach in text form, or write actual code to extend the functionality of NameComponents to also achieve this task.
+If you have attempted to solve the task with code, but didn’t manage to run it successfully, it is no problem to send your attempt with unfinished code. 
+
+Feel free to re-use code or use libraries that you might find online, with correct attribution. Obviously, do NOT use genrative AI tools to write any code; doing so would result in immediate disqualification.
