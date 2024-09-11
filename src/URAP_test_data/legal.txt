@@ -14,3 +14,5 @@ cic
 cio
 ltd
 s.a.
+limited
+co
