@@ -2,7 +2,7 @@ import re
 from logger import logger
 from multiprocessing import Pool
 import pandas as pd
-from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 
 class NameComponents:
