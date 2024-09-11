@@ -25,7 +25,6 @@ Then run the following command to execute the script:
 ```bash
 python src/name_components.py
 ```
-**WARNING: Only uncomment and run the final two lines (lines 181 and 182) in `name_components.py` if you are confident your computer has 2 GB of RAM available. Otherwise, trying to load the model may crash Python.**
 
 ## Constructor (`__init__` method)
 
