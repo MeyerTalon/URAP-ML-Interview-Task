@@ -25,7 +25,7 @@ Then run the following command to execute the script:
 ```bash
 python src/name_components.py
 ```
-**WARNING: Only uncomment and run the final two lines (lines 181 and 182) in `name_components.py` if you are confident your computer has 16 GB of RAM available. Otherwise, trying to load the model with crash Python.**
+**WARNING: Only uncomment and run the final two lines (lines 181 and 182) in `name_components.py` if you are confident your computer has 2 GB of RAM available. Otherwise, trying to load the model may crash Python.**
 
 ## Constructor (`__init__` method)
 
@@ -132,7 +132,7 @@ name_components.get_all_name_components()
 # Parses all company names and outputs a CSV file with their components.
 ```
 ---
-## Initalize Model
+## Initialize Model
     
  ```python
  def initialize_model(self) -> None:
