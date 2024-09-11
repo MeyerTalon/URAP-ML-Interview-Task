@@ -41,9 +41,6 @@ class NameComponents:
             for index, line in enumerate(f):
                 self.company_dict[line.replace('\n', '')] = index
 
-        # Initialize the custom fine-tuned BERT tokenizer and model.
-        self.tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-cased')
-        self.model = AutoModelForSequenceClassification.from_pretrained('TalonMeyer/bert-base-cased-legal-keyword-identifier')
 
     @staticmethod
     def generate_consecutive_word_combinations(comp_name: str) -> [str]:
@@ -137,6 +134,19 @@ class NameComponents:
 
         logger.info(f'Completed text parsing on all company names.')
 
+    def initialize_model(self) -> None:
+        """
+        This method initializes the custom fine-tuned BERT tokenizer and model.
+        """
+        logger.info('Initializing the custom fine-tuned BERT tokenizer and model.')
+
+        try:
+            # Initialize the custom fine-tuned BERT tokenizer and model.
+            self.tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-cased')
+            self.model = AutoModelForSequenceClassification.from_pretrained('TalonMeyer/bert-base-cased-legal-keyword-identifier')
+        except Exception as e:
+            logger.error(f'Error in initialize_model: {e}.')
+
     def contains_legal_identifier(self, comp_name: str) -> bool:
         """
         This method checks if a company name contains a legal identifier using the fine-tuned BERT model.
@@ -150,20 +160,24 @@ class NameComponents:
 
         logger.info(f'Starting legal identifier inference check on: {comp_name}.')
 
-        # Tokenize the company name.
-        tokens = self.tokenizer(comp_name, return_tensors='pt')
+        try:
 
-        # Get the model output.
-        outputs = self.model(**tokens)
+            # Tokenize the company name.
+            tokens = self.tokenizer(comp_name, return_tensors='pt')
 
-        # Get the predicted labels.
-        predicted_label = outputs.logits.argmax(dim=1)
+            # Get the model output.
+            outputs = self.model(**tokens)
 
-        # Check if the company name contains a legal identifier.
-        if 1 in predicted_label[0]:
-            return True
-        else:
-            return False
+            # Get the predicted labels.
+            predicted_label = outputs.logits.argmax(dim=1)
+
+            # Check if the company name contains a legal identifier.
+            if 1 in predicted_label[0]:
+                return True
+            else:
+                return False
+        except Exception as e:
+            logger.error(f'Error in contains_legal_identifier: {e}. Make sure you previously ran initialize_model.')
 
 
 if __name__ == '__main__':
@@ -173,4 +187,5 @@ if __name__ == '__main__':
     name_components.get_all_name_components()
 
     # Test the contains_legal_identifier method.
-    print(name_components.contains_legal_identifier('Apple Inc.'))
+    # name_components.initialize_model()
+    # print(name_components.contains_legal_identifier('Apple Inc.'))
