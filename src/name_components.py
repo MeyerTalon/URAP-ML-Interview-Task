@@ -19,6 +19,10 @@ class NameComponents:
 
         logger.info('Initializing NameComponents class.')
 
+        # Initialize model and tokenizer, but do not load them. This is done in the initialize method.
+        self.model = None
+        self.tokenizer = None
+
         # Initialize dicts to hold the locations, legal identifiers, and companies.
         self.locations_dict = {}
         self.legal_dict = {}
@@ -40,7 +44,6 @@ class NameComponents:
         with open(r'./src/URAP_test_data/companies.txt') as f:
             for index, line in enumerate(f):
                 self.company_dict[line.replace('\n', '')] = index
-
 
     @staticmethod
     def generate_consecutive_word_combinations(comp_name: str) -> [str]:
