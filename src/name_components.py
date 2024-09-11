@@ -2,15 +2,18 @@ import re
 from logger import logger
 from multiprocessing import Pool
 import pandas as pd
-import os
 
 
 class NameComponents:
 
     def __init__(self) -> None:
         """
-        Initialize the NameComponents class by reading in the data files from the folder URAP_test_data as pandas
-        dataframes and storing them as instance variables.
+        Initialize the NameComponents class by reading in the data files from the folder URAP_test_data.
+
+        Attributes:
+            locations_dict (dict): all locations from locations.tsv files parsed to a dictionary.
+            legal_dict (dict): all legal identifiers from the legal.txt file parsed to a dictionary.
+            company_dict (dict): all company names from the companies.txt file parse to a dictionary.
         """
 
         logger.info('Initializing NameComponents class.')
@@ -29,6 +32,7 @@ class NameComponents:
         # Open legal.txt and populate the legal_dict.
         with open(r'./src/URAP_test_data/legal.txt') as f:
             for index, line in enumerate(f):
+                key = re.sub(r'[^\w\s]', '', key.lower())
                 self.legal_dict[line.replace('\n', '').lower()] = index
 
         # Open companies.txt and populate the company_dict.
@@ -37,27 +41,11 @@ class NameComponents:
                 self.company_dict[line.replace('\n', '')] = index
 
     @staticmethod
-    def contains_word(sentence: str, word: str) -> bool:
-        """
-        This helper function is used to check if a whole word is contained in a sentence. This is needed as opposed to a
-        simple in keyword check because in only looks for matching characters, so if the company name was Cool Company
-        Inc. the location co (Colorado) would be contained in the company name which is not what we want.
-
-        Args:
-            sentence (str): the sentence which may contain the word.
-            word (str): the word to look for in the sentence.
-
-        Returns:
-            True if the whole word is in the sentence, False otherwise.
-        """
-
-        # This regex pattern matches the word preceded by and followed by any non-alphabetical character to make sure
-        # theword is not within a larger word.
-        return bool(re.search(f'([^a-zA-Z]|^){word}([^a-zA-Z]|$)', sentence))
-
-    @staticmethod
     def generate_consecutive_word_combinations(comp_name: str) -> [str]:
         """
+        This method generates all possible combinations of consecutive words in a string. For instance, the string
+        'the brown fox' returns ['the', 'brown', 'fox', 'the brown', 'the brown fox', 'brown fox'].
+        I created this method to check for multi-word locations such as 'long island'.
 
         Args:
             comp_name:
@@ -78,7 +66,8 @@ class NameComponents:
 
     def get_name_components(self, comp_name: str) -> dict[str: str]:
         """
-        This function extracts the legal identifier and location name within a company name.
+        This method extracts the raw name, legal identifier, location, and base name within a company name returning the
+        components as a dict.
 
         Args:
             comp_name (str): the name of the company to parse in a dictionary.
@@ -93,25 +82,30 @@ class NameComponents:
         # Create the output dictionary and add the raw comp_name string to it.
         components = {'raw': comp_name}
 
-        # Remove all non-alphanumerics besides whitespaces and cast to lowercase.
-        edited_comp_name = re.sub(r'[^\w\s]', '', comp_name.lower())
+        try:
 
-        # For every consecutive combination of words in comp_name, check legal and location
-        comp_name_word_combinations = self.generate_consecutive_word_combinations(edited_comp_name)
+            # Remove all non-alphanumerics besides whitespaces and cast to lowercase.
+            edited_comp_name = re.sub(r'[^\w\s]', '', comp_name.lower())
 
-        # Loop through all combinations of our word to search for legal terms and locations.
-        for combo in comp_name_word_combinations:
+            # For every consecutive combination of words in comp_name, check legal and location
+            comp_name_word_combinations = self.generate_consecutive_word_combinations(edited_comp_name)
 
-            if combo in self.legal_dict and combo not in components.values():
-                components['legal'] = combo
-                edited_comp_name = edited_comp_name.replace(combo, '')
+            # Loop through all combinations of our word to search for legal terms and locations.
+            for combo in comp_name_word_combinations:
 
-            if combo in self.locations_dict and combo not in components.values():
-                components['location'] = combo
-                edited_comp_name = edited_comp_name.replace(combo, '')
+                if combo in self.legal_dict and combo not in components.values():
+                    components['legal'] = combo
+                    edited_comp_name = edited_comp_name.replace(combo, '')
 
-        # Once the legal and location are removed, all that remains is the base name.
-        components['base_name'] = re.sub(r'[ ]+', ' ', edited_comp_name).strip()
+                if combo in self.locations_dict and combo not in components.values():
+                    components['location'] = combo
+                    edited_comp_name = edited_comp_name.replace(combo, '')
+
+            # Once the legal and location are removed, all that remains is the base name.
+            components['base_name'] = re.sub(r'[ ]+', ' ', edited_comp_name).strip()
+
+        except Exception as e:
+            logger.error(f'{comp_name} generated error: {e}')
 
         logger.info(f'Completed name component parsing on: {comp_name}, with result: {components}')
 
@@ -138,5 +132,6 @@ class NameComponents:
 
 if __name__ == '__main__':
 
+    # Create instance of NameComponents and parse all company names.
     name_components = NameComponents()
     name_components.get_all_name_components()
