@@ -8,7 +8,7 @@ The `NameComponents` class is designed to parse company names, extract specific 
 ## Table of Contents
 
 - [Usage](#usage)
-- [Initialization (`__init__` method)](#initialization)
+- [Constructor (`__init__` method)](#initialization)
 - [Generate Consecutive Word Combinations](#generate_consecutive_word_combinations)
 - [Get Name Components](#get_name_components)
 - [Get All Name Components](#get_all_name_components)
