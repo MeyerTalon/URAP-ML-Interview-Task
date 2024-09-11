@@ -42,7 +42,6 @@ python src/name_components.py
    - Populate `legal_dict` with each legal term as the key, and its index as the value.
 5. Open the `companies.txt` file:
    - Populate `company_dict` with each line representing a company name as the key, and its index as the value.
-6. Initialize the fine-tined BERT model and tokenizer for legal identifier detection.
 
 ### Example:
 ```python
@@ -133,6 +132,20 @@ name_components.get_all_name_components()
 # Parses all company names and outputs a CSV file with their components.
 ```
 ---
+## Initalize Model
+    
+ ```python
+ def initialize_model(self) -> None:
+ ```
+
+**Description**: This method initializes the fine-tuned BERT model for predicting the presence of a legal identifier in a company name. It uses the Hugging Face `transformers` library to load the model from the Hugging Face model hub.
+
+### Algorithm:
+1. Log the initialization of the fine-tuned BERT model.
+2. Load the fine-tuned BERT model from the Hugging Face model hub.
+3. Catch any exceptions and log errors if the model fails to load.
+---
+
 ## Contains Legal Identifier
 
 ```python   
