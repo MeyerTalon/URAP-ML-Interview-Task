@@ -14,7 +14,7 @@ Then, I used the `transformers` library to load the pre-trained BERT model and f
 contained a legal identifier. This way, someone without a list of legal jargon can ascertain if a company name contains a legal identifier by
 simply running inference on the model. Note that while only 10% of the parsed dataset was used for training (because that is the most Google Colab free tier allows), the model was able to achieve an accuracy of XXX% on the test set.
 
-Once the model training was complete I pushed the model to Hugging Face at [TalonMeyer/bert-base-cased-legal-keyword-identifier](https://huggingface.co/TalonMeyer/URAP_interview_task_model)
+Once the model training was complete I pushed the model to Hugging Face at [TalonMeyer/bert-base-cased-legal-keyword-identifier](https://huggingface.co/TalonMeyer/bert-base-cased-legal-keyword-identifier)
 and implemented it in the `NameComponents` class.
 
 ### Use of Google Colab
