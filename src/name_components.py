@@ -111,11 +111,11 @@ class NameComponents:
 
                 if combo in self.legal_dict and combo not in components.values():
                     components['legal'] = combo
-                    edited_comp_name = edited_comp_name.replace(combo, '')
+                    edited_comp_name = re.sub(rf'( |^){combo}( |$)', '', edited_comp_name)
 
                 if combo in self.locations_dict and combo not in components.values():
                     components['location'] = combo
-                    edited_comp_name = edited_comp_name.replace(combo, '')
+                    edited_comp_name = re.sub(rf'( |^){combo}( |$)', '', edited_comp_name)
 
             # Once the legal and location are removed, all that remains is the base name.
             components['base_name'] = re.sub(r'[ ]+', ' ', edited_comp_name).strip()
