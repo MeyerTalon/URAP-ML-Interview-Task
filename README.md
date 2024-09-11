@@ -25,7 +25,7 @@ Then run the following command to execute the script:
 python src/name_components.py
 ```
 
-## Initialization (`__init__` method)
+## Constructor (`__init__` method)
 
 **Description**: This method initializes the `NameComponents` class by reading the data files (`locations.tsv`, `legal.txt`, `companies.txt`) and populating corresponding dictionaries (`locations_dict`, `legal_dict`, `company_dict`).
 
@@ -40,6 +40,7 @@ python src/name_components.py
    - Populate `legal_dict` with each legal term as the key, and its index as the value.
 5. Open the `companies.txt` file:
    - Populate `company_dict` with each line representing a company name as the key, and its index as the value.
+6. Initialize the fine-tined BERT model and tokenizer for legal identifier detection.
 
 ### Example:
 ```python
@@ -129,8 +130,30 @@ def get_all_name_components(self) -> None:
 name_components.get_all_name_components()
 # Parses all company names and outputs a CSV file with their components.
 ```
-
 ---
+## Contains Legal Identifier
+
+```python   
+def contains_legal_identifier(self, comp_name: str) -> bool:
+```   
+
+**Description**: This method takes a company name as input and determines if it contains a legal identifier. It uses the fine-tuned BERT model to predict the presence of a legal identifier in the company name.
+
+### Algorithm:
+1. Tokenize the input company name using the BERT tokenizer.
+2. Pad the tokenized sequence to the maximum length.
+3. Convert the tokenized sequence to tensor format.
+4. Perform inference using the fine-tuned BERT model.
+5. Extract the predicted label from the model output.
+6. Return `True` if the model predicts the presence of a legal identifier, `False` otherwise.
+
+### Example:
+```python
+contains_legal_identifier = name_components.contains_legal_identifier("Apple Inc.")
+# Returns: True
+```
+---
+
 
 ## Usage Example
 

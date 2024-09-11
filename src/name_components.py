@@ -2,7 +2,8 @@ import re
 from logger import logger
 from multiprocessing import Pool
 import pandas as pd
-import transformers
+from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+
 
 class NameComponents:
 
@@ -39,6 +40,10 @@ class NameComponents:
         with open(r'./src/URAP_test_data/companies.txt') as f:
             for index, line in enumerate(f):
                 self.company_dict[line.replace('\n', '')] = index
+
+        # Initialize the custom fine-tuned BERT tokenizer and model.
+        self.tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-cased')
+        self.model = AutoModelForSequenceClassification.from_pretrained('TalonMeyer/bert-base-cased-legal-keyword-identifier')
 
     @staticmethod
     def generate_consecutive_word_combinations(comp_name: str) -> [str]:
@@ -132,9 +137,40 @@ class NameComponents:
 
         logger.info(f'Completed text parsing on all company names.')
 
+    def contains_legal_identifier(self, comp_name: str) -> bool:
+        """
+        This method checks if a company name contains a legal identifier using the fine-tuned BERT model.
+
+        Args:
+            comp_name (str): the name of the company to parse in a dictionary.
+
+        Returns:
+            bool: True if the company name contains a legal identifier, False otherwise.
+        """
+
+        logger.info(f'Starting legal identifier inference check on: {comp_name}.')
+
+        # Tokenize the company name.
+        tokens = self.tokenizer(comp_name, return_tensors='pt')
+
+        # Get the model output.
+        outputs = self.model(**tokens)
+
+        # Get the predicted labels.
+        predicted_label = outputs.logits.argmax(dim=1)
+
+        # Check if the company name contains a legal identifier.
+        if 1 in predicted_label[0]:
+            return True
+        else:
+            return False
+
 
 if __name__ == '__main__':
 
     # Create instance of NameComponents and parse all company names.
     name_components = NameComponents()
     name_components.get_all_name_components()
+
+    # Test the contains_legal_identifier method.
+    print(name_components.contains_legal_identifier('Apple Inc.'))
