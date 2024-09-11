@@ -2,7 +2,7 @@ import re
 from logger import logger
 from multiprocessing import Pool
 import pandas as pd
-
+import transformers
 
 class NameComponents:
 
@@ -48,14 +48,17 @@ class NameComponents:
         I created this method to check for multi-word locations such as 'long island'.
 
         Args:
-            comp_name:
+            comp_name (str): the name of the company to parse in a dictionary.
 
         Returns:
-
+            combinations (list): a list of all possible consecutive word combinations in the comp_name string.
         """
+
+        # Split the company name into a list of words.
         name_split = comp_name.split()
         combinations = comp_name.split()
 
+        # Generate all possible consecutive word combinations.
         for i in range(len(name_split)):
             combo = name_split[i]
             for j in range(i + 1, len(name_split)):
