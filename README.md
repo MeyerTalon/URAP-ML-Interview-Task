@@ -182,6 +182,12 @@ This will initialize the class, parse all company names, and store the results i
 
 ---
 
+## Current errors and possible improvements
+
+1. The locations.tsv file contains some odd location names such as 'bio', 'and', and 'de'. While these are locations, they are also common words that show up in company names which do not refer to locations. One potential way to mitigate this would be to use semantic analysis ML model to parse a company name and determine if a word is a location based on the context. An implementation to this would be similar to the paper [Detecting hallucinations in large language models using semantic entropy](https://www.nature.com/articles/s41586-024-07421-0) by Sebastian Farquhar, Jannik Kossen, Lorenz Kuhn & Yarin Gal (2024).
+2. As part of the text cleaning process, non-alphanumerics are removed. This process could be improved to remove alphanumeric characters while preserving the semantic structure of the company name.
+3. The legal.txt file contains many legal identifiers, but not all. The entire process from programmatic text extraction to model fine-tuning could improved by using a larger dataset of legal identifiers.
+
 
 
 
